@@ -1,0 +1,42 @@
+{
+    "version": "1.0",
+    "timestamp": "2024-03-18T05: 36: 22.300Z",
+    "requestContext": {
+        "requestId": "0965f7d2-0c71-4ac9-beae-cd0cbc020bee",
+        "functionArn": "arn:aws:lambda:ap-northeast-1: 227395947229:function:daikinemoto-a2b-common-exec-cur-upload:$LATEST",
+        "condition": "RetriesExhausted",
+        "approximateInvokeCount": 3
+    },
+    "requestPayload": {
+        "payer_aws_account_id": "434519024304",
+        "signup_id": 751
+    },
+    "responseContext": {
+        "statusCode": 200,
+        "executedVersion": "$LATEST",
+        "functionError": "Unhandled"
+    },
+    "responsePayload": {
+        "errorMessage": "#1094: chorus_portal_account not found \n testの失敗",
+        "errorType": "com.nhn_techorus.a2b.lambda.exception.A2BRuntimeException",
+        "stackTrace": [
+            "com.nhn_techorus.a2b.lambda.handler.AbstractHandler.handleRequest(AbstractHandler.java: 47)",
+            "java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)",
+            "java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)",
+            "java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)",
+            "java.base/java.lang.reflect.Method.invoke(Unknown Source)"
+        ],
+        "cause": {
+            "errorMessage": "#1094: chorus_portal_account not found \n testの失敗",
+            "errorType": "com.nhn_techorus.a2b.lambda.exception.A2BRuntimeException",
+            "stackTrace": [
+                "com.nhn_techorus.a2b.lambda.handler.ExecuteCurUploadHandler.main(ExecuteCurUploadHandler.java: 39)",
+                "com.nhn_techorus.a2b.lambda.handler.AbstractHandler.handleRequest(AbstractHandler.java: 35)",
+                "java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)",
+                "java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)",
+                "java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)",
+                "java.base/java.lang.reflect.Method.invoke(Unknown Source)"
+            ]
+        }
+    }
+}

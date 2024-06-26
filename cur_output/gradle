@@ -1,0 +1,51 @@
+// これにするとログが出なくなる
+// powertools-parameters を1.18にするとログが出なくなる。multipleになる
+
+plugins {
+    id 'java'
+}
+compileJava {
+    options.release = 11
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations.all {
+    exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+}
+
+dependencies {
+    // Lambda core
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+    implementation 'software.amazon.lambda:powertools-parameters:1.18.0'
+
+    // AWS
+    implementation platform('software.amazon.awssdk:bom:2.15.0')
+    implementation 'software.amazon.awssdk:glue:2.17.160'
+    implementation 'software.amazon.awssdk:s3:2.17.181'
+    implementation 'software.amazon.awssdk:athena:2.17.214'
+    implementation 'software.amazon.awssdk:s3control:2.20.115'
+    implementation 'software.amazon.awssdk:lambda:2.20.115'
+
+    // Slack
+    implementation 'com.slack.api:slack-api-client:1.38.3'
+
+    // logback
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'ch.qos.logback:logback-core:1.4.12'
+    implementation 'ch.qos.logback:logback-classic:1.4.12'
+    implementation 'org.codehaus.janino:janino:3.1.8'
+
+    // Other
+    // implementation 'com.google.code.gson:gson:2.9.0'
+    // implementation 'org.json:json:20240303'
+    implementation 'org.apache.commons:commons-lang3:3.0' // 文字列操作
+    implementation 'commons-codec:commons-codec:1.16.0' // Etag作成
+    implementation 'com.google.guava:guava:33.1.0-jre' // ImmutableList
+
+    // Test
+    testImplementation 'junit:junit:4.13.2'
+}

@@ -1,0 +1,1951 @@
+<template>
+  <BudgetMethods ref="methods"/>
+  <ReportMethods ref="reportMethods"/>
+  <Alert ref="alert"/>
+  <div v-show="!initialized">
+    <div class="loader">Loading...</div>
+  </div>
+  <div v-show="initialized">
+    {{ currencyJudgeValue }}
+    {{ taxJudgeValue }}
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="pull-left">
+          <template v-if="budget.budget_lock">
+            <span class="btn btn-primary disabled">編集</span>
+            <span class="btn btn-primary" v-on:click="unlockBudget">ロック解除</span>
+            <span class="btn btn-primary disabled">削除</span>
+          </template>
+          <template v-else>
+            <a class="btn btn-primary" :href="`/mypage/budget/${id}/edit`">編集</a>
+            <span class="btn btn-primary" v-on:click="lockBudget">ロック</span>
+            <span class="btn btn-primary" v-on:click="deleteBudget">削除</span>
+          </template>
+        </div>
+        <div class="pull-right">
+          <span>表示通貨切替：</span>
+          <template v-if="budget.currency === 'usd'">
+            <DropDownButton
+              dropdownId="currencyTaxItemButton"
+              :dropdownItem="usdCurrencyTaxItem"
+              v-on:updateReport="changeCurrency"
+              v-model:item="selectCurrencyTax"
+            />
+          </template>
+          <template v-else>
+            <DropDownButton
+              dropdownId="currencyTaxItemButton"
+              :dropdownItem="jpyCurrencyTaxItem"
+              v-on:updateReport="changeCurrency"
+              v-model:item="selectCurrencyTax"
+            />
+          </template>
+          <span><a class="btn default" :href="path">一覧</a></span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">予算の状態 ({{ budgetStatusCurrentMonth }}月)</div>
+      </div>
+      <div class="card-body form-border">
+        <div class="row">
+          <template v-if="budgetStatus.current_month_actual_amount && budgetStatus.current_month_estimate_amount">
+            <div class="col-lg-6 col-md-6 col-sm-12 flex-border">
+              <div>予算と実績</div>
+              <div>
+                <BudgetProgress :ratio.number="budgetStatus.current_month_actual_budget_ratio"/>
+              </div>
+              <div>
+                <small>支出額 {{currency.unit}}{{budgetStatus.current_month_budget_amount}}のうち {{currency.unit}}{{budgetStatus.current_month_actual_amount.toFixed(2)}}</small>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <div>予算と予測</div>
+              <div>
+                <BudgetProgress :ratio.number="budgetStatus.current_month_estimate_budget_ratio"/>
+              </div>
+              <div>
+                <small>支出額 {{currency.unit}}{{budgetStatus.current_month_budget_amount}}のうち {{currency.unit}}{{budgetStatus.current_month_estimate_amount.toFixed(2)}}</small>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              集計中
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">予算の状態(期間全体)</div>
+      </div>
+      <div class="card-body form-border">
+        <div class="row">
+          <template v-if="budgetStatus.actual_amount_sum && budgetStatus.estimate_amount_sum">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <div>予算総計と実績累計</div>
+              <div>
+                <BudgetProgress :ratio.number="budgetStatus.actual_budget_ratio"/>
+              </div>
+              <div>
+                <small>支出額 {{currency.unit}}{{budgetStatus.budget_amount_sum}}のうち {{currency.unit}}{{budgetStatus.actual_amount_sum.toFixed(2)}}</small>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <div>予算総計と予測累計</div>
+              <div>
+                <BudgetProgress :ratio.number="budgetStatus.estimate_budget_ratio"/>
+              </div>
+              <div>
+                <small>支出額 {{currency.unit}}{{budgetStatus.budget_amount_sum}}のうち {{currency.unit}}{{budgetStatus.estimate_amount_sum.toFixed(2)}}</small>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              集計中
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+    <div class="card col-lg-6 col-md-6 col-sm-12">
+      <div class="card-header">
+        <div class="card-title">アラート</div>
+      </div>
+      <div class="card-body">
+        <table id="cost_alert-list" class="table table-borderless">
+          <thead>
+          <tr>
+            <th>閾値</th>
+            <th>トリガー</th>
+            <th>超過状況</th>
+            <th>アクション</th>
+          </tr>
+          </thead>
+          <tbody>
+          <template v-if="alerts.length > 0">
+            <tr v-for="alert in alerts">
+              <td>
+                <span>予想額の{{ alert.borderline }}%</span>
+              </td>
+              <td>
+                <template v-if="alert.alert_trigger==='actual'">実績</template>
+                <template v-else>予測</template>
+              </td>
+              <td>
+                <template v-if="alert.alert_status === 'normal'">
+                  <i class="material-icons color-green align-middle">check_circle</i>
+                </template>
+                <template v-else-if="alert.alert_status === 'warning'">
+                  <i class="material-icons color-red align-middle">warning</i>
+                </template>
+                <template v-else>
+                  <span>-</span>
+                </template>
+              </td>
+              <td>
+                <a :href="`/mypage/alert/setting/budget/${alert.alert_id}/edit`" class="text-white">
+                  <i class="material-icons color-blue cursor-pointer">article</i>
+                </a>
+              </td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr>
+              <td colspan="9">
+                設定はありません
+              </td>
+            </tr>
+          </template>
+          </tbody>
+        </table>
+        <template v-if="alerts.length < 5">
+          <div>
+            <a :href="`/mypage/alert/setting/budget/new?budget_id=${id}`">
+              アラート設定を追加する
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">詳細</div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-sm-12 flex-border">
+            <div>
+              <div>予算名</div>
+              <div class="ml-4">{{ budget.budget_name }}</div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12 flex-border">
+            <div>
+              <div>期間(開始)</div>
+              <div class="ml-4">{{ budget.start_date }}</div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <div>
+              <div>期間(終了)</div>
+              <div class="ml-4">{{ budget.end_date }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="row pt-3">
+          <div class="col-lg-4 col-md-4 col-sm-12 flex-border">
+            <div>
+              <div>通貨</div>
+              <div class="ml-4">{{ budget.currency === 'usd' ? "$" : "円"}}</div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12 flex-border">
+            <div>
+              <div>予算レート</div>
+              <div class="ml-4">{{ budget.exchange_rate }}</div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <div>
+              <div>設定方法</div>
+              <div class="ml-4">{{ searchOptionName(budget.setting_type) }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="row pt-3">
+          <div class="col-lg-4 col-md-4 col-sm-12 flex-border">
+            <div>
+              <div>連結アカウント</div>
+              <div class="ml-4">
+                <span v-if="budget.filter.linked_account.values.length">
+                  {{ budget.filter.linked_account.values.join(", ") }}
+                </span>
+                <span v-else>
+                  全て
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12 flex-border">
+            <div>
+              <div>料金タイプ</div>
+              <div class="ml-4">
+                <span v-if="budget.filter.charge_type.values.length">
+                  {{ budget.filter.charge_type.values.join(", ") }}
+                </span>
+                <span v-else>
+                  全て
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <div v-if="budget.setting_type === 'pricing_calculator' || budget.setting_type === 'actual_estimate'">
+              <div>予算作成時の予測結果</div>
+              <div class="ml-4">
+                <span class="btn btn-primary btn-sm cursor-pointer" v-on:click="downloadBudgetDetail">DL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">予算履歴</div>
+        <DropDownButton
+          dropdownId="estimateItemButton"
+          :dropdownItem="estimateItem"
+          v-on:updateReport="updateDashboard"
+          v-model:item="selectEstimate"
+        />
+      </div>
+      <div class="card-body">
+        <IframeDashboard ref="dashboard" height="800px"/>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { computed, onMounted, ref } from "vue";
+import Alert from "../components/alert_new.vue";
+import BudgetProgress from "../components/budget_progress.vue";
+import IframeDashboard from "../components/iframe_dashboard.vue";
+import { pagePath } from "../utils/constants";
+import { extractId } from "../lib/common";
+import BudgetMethods from "../components/budget_methods.vue";
+import ReportMethods from "../components/report_methods.vue";
+import { useAmount } from "../composables/budget_amount";
+import * as constants from "../utils/constants";
+import DropDownButton from "../components/dropdown_button.vue";
+
+const id = extractId(3)
+const path = pagePath.budget.index
+const estimateItem = [
+  {name: '通常予測',         value: 'normalcost'},
+  {name: '推奨事項(RI)を実践時の予測',    value: 'savedcost'}
+]
+const usdCurrencyTaxItem = [
+  {name: '$ (税抜)', value: 'usd-No'},
+  {name: '$ (税込)', value: 'usd-Yes'}
+]
+const jpyCurrencyTaxItem = [
+  {name: '$ (税抜)', value: 'usd-No'},
+  {name: '$ (税込)', value: 'usd-Yes'},
+  {name: '円 (税抜)', value: 'jpy-No'},
+  {name: '円 (税込)', value: 'jpy-Yes'}
+]
+
+const alert = ref(null)
+const methods = ref(null)
+const reportMethods = ref(null)
+const dashboard = ref(null)
+const selectEstimate = ref("normalcost")
+const selectCurrencyTax = ref("usd-No")
+
+const { searchOptionName } = useAmount()
+
+let initialized = ref(false)
+let currency = ref({ value: "usd", unit: "$" })
+let lock = ref(false)
+let budget = ref({
+    "budget_name": "XXX",
+    "start_date": "2023-04",
+    "end_date": "2024-03",
+    "currency": "usd",
+    "exchange_rate": 200,
+    "setting_type": "fixed",
+    "filter": {
+      linked_account:{
+        condition: "include",
+        values: ["655146499999", "53433875999"]
+      },
+      charge_type: {
+        condition: "include",
+        values: ["Usage", "DiscountedUsage", "Fee"]
+      },
+      budget_id: {
+        condition: "include",
+        values: []
+      }
+    },
+    "budget_lock": false,
+  })
+let budgetStatus= ref( {
+    current_month: "2023-12",
+    current_month_budget_amount: 100,
+    current_month_actual_amount: 80.12,
+    current_month_estimate_amount: 90.23,
+    current_month_actual_budget_ratio: 80.11,
+    current_month_estimate_budget_ratio: 90.11,
+    budget_amount_sum: 600,
+    actual_amount_sum: 480.11,
+    estimate_amount_sum: 601.12,
+    actual_budget_ratio: 40.11,
+    estimate_budget_ratio: 80.11
+})
+let alerts = ref([
+  {
+    "alert_id": 1,
+    "borderline": "100",
+    "alert_trigger": "actual",
+    "alert_status": "normal"
+  },
+  {
+    "alert_id": 2,
+    "borderline": "200",
+    "alert_trigger": "estimate",
+    "alert_status": "warning"
+  }
+])
+let aws_report = ref({})
+
+const budgetStatusCurrentMonth = computed( () => {
+  return budgetStatus.value.current_month.split("-")[1]
+})
+
+const currencyJudgeValue = computed( () => {
+  return selectCurrencyTax.value.split('-')[0] === "usd" ? "usd" : "jpy"
+})
+
+const taxJudgeValue = computed( () => {
+  return selectCurrencyTax.value.split('-')[1] === "Yes" ? "Yes" : "No"
+})
+
+const getBudget = async function(id, showAlert) {
+  const result = await methods.value.getBudget(id, showAlert)
+  if(!result){ return false }
+  budget.value = result
+}
+
+const getBudgetDetail = async function(id) {
+  const result = await methods.value.getBudgetDetail(id, currency.value.value, taxJudgeValue.value.toUpperCase())
+  if(!result){ return false }
+  budgetStatus.value = result
+}
+
+const getBudgetDetailAlert = async function(id) {
+  const result = await methods.value.getBudgetDetailAlert(id);
+  if(!result){ return false }
+  alerts.value = result
+}
+
+const downloadBudgetDetail =  async function() {
+  await methods.value.downloadBudgetDetail(id)
+}
+
+const lockBudget = async function() {
+  const result = await methods.value.lockBudget(id);
+  if(!result){ return false }
+  await getBudget(id, true)
+}
+
+const unlockBudget = async function() {
+  const result = await methods.value.unlockBudget(id);
+  if(!result){ return false }
+  await getBudget(id, true)
+}
+
+const deleteBudget = async function(){
+  if (!window.confirm("本当に削除しますか?")) return;
+  const result = await methods.value.deleteBudget(id, true);
+  if(!result){ return false }
+  setTimeout(transition,1000);
+}
+
+const updateDashboard = async () => {
+  aws_report.value.filter.forecasted_type.values = [ selectEstimate.value ]
+  aws_report.value.filter.apply_tax.values = [ taxJudgeValue.value ]
+  await dashboard.value.generateDashboard(aws_report.value)
+}
+
+const changeCurrency = async () => {
+  if(currencyJudgeValue.value === "usd"){
+    currency.value = { value: "usd", unit: "$" }
+  }else{
+    currency.value = { value: "jpy", unit: "¥" }
+  }
+
+  await getBudgetDetail(id)
+  await getReport()
+  await dashboard.value.generateDashboard(aws_report.value)
+}
+
+const getReport = async () => {
+  const reportType = currency.value.value === "usd" ? constants.budgetHistory : constants.budgetHistoryJpy
+  const result = await reportMethods.value.getReport(0, reportType)
+  if(!result){ return false }
+  result.filter.budget_id.values.push(id)
+  result.filter.apply_tax.values = [ taxJudgeValue.value ]
+  aws_report.value = result
+}
+
+const transition = () => {
+  window.location.href = path
+}
+
+onMounted(async () => {
+  await getBudget(id, false)
+  await getBudgetDetail(id)
+  await getBudgetDetailAlert(id)
+  await getReport()
+  initialized.value = true
+
+  await dashboard.value.generateDashboard(aws_report.value)
+})
+
+</script>
+<style scoped>
+.flex-border {
+  border-right: solid 1px #d2d2d2
+}
+.color-blue {
+  color: #2196f3;
+}
+.color-red {
+  color: #ff0000;
+}
+.color-green {
+  color: #008000;
+}
+</style>
+
+
+---
+
+
+dashboard-default:
+  report:
+
+    cost_explorer:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "cost_explorer",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "service",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "bar"
+         },
+         "filter": {
+           "linked_account": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "service": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "region": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "instance_type": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "usage_type": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "charge_type": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "api_operation": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "availability_zone": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "platform": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "purchase_option": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "tenancy": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "billing_entity": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "cost_type": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "chorus_cost_tag_1": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "chorus_cost_tag_2": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "chorus_cost_tag_3": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "chorus_cost_tag_4": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "chorus_cost_tag_5": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "no_tag": { 
+              "condition": "include", 
+              "values": [] 
+            }
+         }
+       }'
+
+    ri_utilization_report:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "ri_utilization_report",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+           "linked_account": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "service": { 
+              "condition": "include", 
+              "values": [ "Amazon Elastic Compute Cloud" ] 
+            },
+           "region": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "instance_type": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "platform": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "tenancy": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "scope": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "size_flexibility": { 
+              "condition": "include", 
+              "values": [] 
+            }
+         }
+       }'
+
+    ri_coverage_report:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "ri_coverage_report",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+           "linked_account": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "service": { 
+              "condition": "include", 
+              "values": [ "Amazon Elastic Compute Cloud" ] 
+            },
+           "region": {
+               "condition": "include", 
+               "values": [] 
+             },
+           "instance_type": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "platform": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "tenancy": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "instance_family": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "chorus_cost_tag_1": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "chorus_cost_tag_2": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "chorus_cost_tag_3": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "chorus_cost_tag_4": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "chorus_cost_tag_5": { 
+              "condition": "include", 
+              "values": [] 
+            }
+         }
+       }'
+
+    ri_recommendation:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "ri_recommendation",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+           "linked_account": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "service": { 
+              "condition": "include", 
+              "values": [ "Amazon Elastic Compute Cloud" ] 
+            },
+           "ri_term": { 
+              "condition": "include", 
+              "values": ["1"] 
+            },
+           "offering_class": { 
+             "condition": "include", 
+             "values": ["standard"] 
+           },
+           "payment_option": { 
+             "condition": "include", 
+             "values": ["All Upfront"] 
+           },
+           "data_period": { 
+             "condition": "include", 
+             "values": ["30日"] 
+           }
+         }
+       }'
+
+    sp_utilization_report:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "sp_utilization_report",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+           "linked_account": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "sp_region": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "sp_instance_family": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "sp_offering_type": { 
+              "condition": "include", 
+              "values": [] 
+            }
+         }
+       }'
+
+    sp_coverage_report:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "sp_coverage_report",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+           "linked_account": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "service": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "region": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "instance_family": { 
+             "condition": "include", 
+             "values": [] 
+           }
+         }
+       }'
+
+    sp_recommendation:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "sp_recommendation",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+           "linked_account": { 
+              "condition": "include", 
+              "values": [] 
+            },
+           "payment_option": { 
+              "condition": "include", 
+              "values": ["All Upfront"]
+            },
+           "sp_type": { 
+              "condition": "include", 
+              "values": ["ComputeSavingsPlans"]
+            },
+           "sp_term": { 
+              "condition": "include", 
+              "values": ["1"] 
+            },
+           "data_period": { 
+              "condition": "include", 
+              "values": ["30日"] 
+            }
+         }
+       }'
+
+    asset_ec2_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_ec2_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_ec2_history:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_ec2_history",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_rds_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_rds_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_rds_history:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_rds_history",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_redshift_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_redshift_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_redshift_history:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_redshift_history",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_s3_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_s3_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_s3_history:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_s3_history",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_ebs_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_ebs_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_ebs_history:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_ebs_history",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_vpc_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_vpc_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_vpc_history:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_vpc_history",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_eip_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_eip_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_eip_history:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_eip_history",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_elb_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_elb_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_elb_history:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_elb_history",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_summary:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_summary",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_summary_computing:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_summary_computing",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_summary_database:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_summary_database",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_summary_disk:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_summary_disk",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_summary_network:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_summary_network",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    asset_summary_storage:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "asset_summary_storage",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    rightsizing_ec2:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "rightsizing_ec2",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+           "linked_account": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "region": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "cpu_architectures": { 
+              "condition": "include", 
+              "values": ["CURRENT"]
+            }
+         }
+       }'
+
+    rightsizing_ec2_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "rightsizing_ec2_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+           "linked_account": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "region": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "cpu_architectures": { 
+             "condition": "include", 
+             "values": ["CURRENT,AWS_ARM64"] 
+           },
+           "instance_id": { 
+             "condition": "include", 
+             "values": [] 
+           }
+         }
+       }'
+
+    rightsizing_ebs:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "rightsizing_ebs",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+          "linked_account": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "region": { 
+             "condition": "include", 
+             "values": [] 
+           }
+         }
+       }'
+
+    rightsizing_ebs_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "rightsizing_ebs_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+          "linked_account": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "region": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "volume_id": { 
+              "condition": "include", 
+              "values": [] 
+            }
+         }
+       }'
+
+    rightsizing_eip:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "rightsizing_eip",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+          "linked_account": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "region": { 
+             "condition": "include", 
+             "values": [] 
+           }
+         }
+       }'
+
+    rightsizing_eip_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "rightsizing_eip_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+          "linked_account": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "region": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "allocation_id": { 
+              "condition": "include", 
+              "values": [] 
+            }
+         }
+       }'
+
+    rightsizing_elb:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "rightsizing_elb",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+          "linked_account": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "region": { 
+             "condition": "include", 
+             "values": [] 
+           }
+         }
+       }'
+
+    rightsizing_elb_detail:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "rightsizing_elb_detail",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "month_3",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "line"
+         },
+         "filter": {
+          "linked_account": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "region": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "name": { 
+              "condition": "include", 
+              "values": [] 
+           }
+         }
+       }'
+
+    budget_list:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "budget_list",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    budget_list_jpy:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "budget_list_jpy",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    budget_history:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "budget_history",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {
+           "budget_id": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "apply_tax": { 
+            "condition": "include", 
+            "values": ["No"] 
+           },
+           "forecasted_type": { 
+              "condition": "include", 
+              "values": ["normalcost"] 
+           }
+         }
+       }'
+
+    budget_history_jpy:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "budget_history_jpy",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {
+           "budget_id": { 
+             "condition": "include", 
+             "values": [] 
+           },
+           "apply_tax": { 
+            "condition": "include", 
+            "values": ["No"] 
+           },
+           "forecasted_type": { 
+              "condition": "include", 
+              "values": ["normalcost"] 
+           }
+         }
+       }'
+
+    home_summary:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "home_summary",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary"
+         },
+         "filter": {}
+       }'
+
+    home_trend:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "home_trend",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "summary_table"
+         },
+         "filter": {}
+       }'
+
+    home_graph:
+      '{
+         "id": 0,
+         "name": "",
+         "report_type": "home_graph",
+         "report_lock": false,
+         "date_range": {
+           "date_range": "current_month",
+           "reference_date": "",
+           "start": "",
+           "end": ""
+         },
+         "graph_style": {
+           "group": "normal",
+           "time_unit": "monthly",
+           "usage": "hours",
+           "visual_type": "bar"
+         },
+         "filter": {}
+       }'
+  filter:
+    '{
+         "id": 0,
+         "name": "",
+         "filter_lock": false,
+         "filter":
+         {
+          "linked_account": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "service": { 
+                "condition": "include", 
+                "values": [] 
+              },
+             "region": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "instance_type": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "usage_type": { 
+                "condition": "include", 
+                "values": [] 
+              },
+             "charge_type": { 
+                "condition": "include", 
+                "values": [] 
+              },
+             "availability_zone": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "platform": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "purchase_option": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "tenancy": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "billing_entity": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "cost_type": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "api_operation": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "instance_family": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "scope": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "size_flexibility": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "sp_offering_type": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "sp_region": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "sp_instance_family": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "chorus_cost_tag_1": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "chorus_cost_tag_2": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "chorus_cost_tag_3": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "chorus_cost_tag_4": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "chorus_cost_tag_5": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "no_tag": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "cpu_architectures": { 
+                "condition": "include", 
+                "values": ["CURRENT"] 
+              },
+             "instance_id": { 
+                "condition": "include", 
+                "values": [] 
+              },
+             "volume_id": { 
+                "condition": "include", 
+                "values": [] 
+              },
+             "ri_term": { 
+                "condition": "include", 
+                "values": ["1"] 
+              },
+             "offering_class": { 
+                "condition": "include", 
+                "values": ["standard"] 
+              },
+             "payment_option": { 
+                "condition": "include", 
+                "values": ["All Upfront"] 
+              },
+             "sp_type": { 
+                "condition": "include", 
+                "values": ["ComputeSavingsPlans" ] 
+              },
+             "sp_term": { 
+                "condition": "include", 
+                "values": ["1" ] 
+              },
+             "data_period": { 
+                "condition": "include", 
+                "values": ["30日" ] 
+              },
+             "service_ri_utilization": { 
+                "condition": "include", 
+                "values": ["Amazon Elastic Compute Cloud" ] 
+              },
+             "service_ri_coverage": { 
+                "condition": "include", 
+                "values": ["Amazon Elastic Compute Cloud" ] 
+              },
+             "service_ri_recommend": { 
+                "condition": "include", 
+                "values": ["Amazon Elastic Compute Cloud" ] 
+              },
+             "instance_family_ri_coverage": { 
+               "condition": "include", 
+               "values": [] 
+             },
+             "instance_family_sp_coverage": { 
+               "condition": "include", 
+               "values": [] 
+             }
+         }
+     }'
+
+budget-csv-template:
+  estimate-from-past-result:
+    '入力した内容
+    
+    対象期間（過去Xヶ月）,バッファ追加（金額のX％）
+    
+    {},{}
+    
+    
+    実績と予測
+    
+    ,{},{}
+    
+    実績,{},{}
+    
+    予測,{},{}'

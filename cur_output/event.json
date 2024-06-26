@@ -1,0 +1,34 @@
+{
+    [
+        {
+            sns: {
+                messageAttributes: {},
+                signingCertUrl: https: //sns.ap-northeast-1.amazonaws.com/SimpleNotificationService-60eadc530605d63b8e62a523676ef735.pem,
+                messageId: 35cd98f7-2224-568c-9a73-c685331511e3,
+                message: 
+                    "version":"1.0",
+                    "timestamp":"2024-03-18T09:52:49.131Z",
+                    "requestContext":{"requestId":"2d00159b-76f6-438e-ab75-ecc772b6118c",
+                    "functionArn":"arn:aws:lambda:ap-northeast-1:227395947229:function:daikinemoto-a2b-common-exec-cur-upload:$LATEST",
+                    "condition":"Success",
+                    "approximateInvokeCount":1},
+                    "requestPayload":{"payer_aws_account_id": "434519024304",
+                    "signup_id": 751},
+                    "responseContext":{"statusCode":200,
+                    "executedVersion":"$LATEST"},
+                    "responsePayload":{
+                        "message":"今月: 2024年03月は確定済みです。しかしCUR(assembly_id=20240310T100000Z)は送信していませんでした。そのためCUR送信処理を実行します。 \n 先月: 2024年02月のCURの集計結果が存在しました。またCUR(assembly_id=)も送信済していませんでした。そのためCUR送信処理を実行します。"
+                    }
+                },
+                unsubscribeUrl: https://sns.ap-northeast-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:ap-northeast-1:227395947229:daikinemoto-a2b-local-cur-upload-LambdaForCurUpload-13AZHMMIUV459-ErrorNotification-2swc1tqozxhg:7e3230c2-ffd5-42c5-9a67-6aa3c4cdb7f0,
+                type: Notification,
+                signatureVersion: 1,
+                signature: BKE52kLXsTWaZyXOpc4qqNcyVgICSzKMVtlcgct1yW7Y6/QivFc4dPF943S7RBdLp8lDewWOk6ByWI4eu3vrnGtFXoTOSusFNCe/KoRFq30MxlHF6kNUTP/alaoQ/bm6J1kfWd4jxHXL9IJtQZWvgQxHisd5B6w5AzSzYHryqZdkAE7b+IE7gx2fLkFLccQ9TUngRcrNpiLL1c1dLfa0FyYPN+KnNKBJ0fcxtkoMOBWM7GD3VW6n+jG8izNO5Cjjq9JoO1SX0hBkNkXhlxvQOvafIn1q2jw1Lc9A8FTyQkqGUzEfmLAmJcuJrYjr62YIIoxMe4EbLH1BUtoNyNBMRQ==,
+                timestamp: 2024-03-18T09:52:49.189Z,
+                topicArn: arn:aws:sns:ap-northeast-1:227395947229:daikinemoto-a2b-local-cur-upload-LambdaForCurUpload-13AZHMMIUV459-ErrorNotification-2swc1tqozxhg},
+                eventVersion: 1.0,
+                eventSource: aws:sns,
+                eventSubscriptionArn: arn:aws:sns:ap-northeast-1:227395947229:daikinemoto-a2b-local-cur-upload-LambdaForCurUpload-13AZHMMIUV459-ErrorNotification-2swc1tqozxhg:7e3230c2-ffd5-42c5-9a67-6aa3c4cdb7f0
+            }
+    ]
+} 

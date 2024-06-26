@@ -1,0 +1,5 @@
+# 2月確定分
+aws --profile private-a2b-admin s3 cp --recursive "s3://production-a2b-common-aws-aggregate-intermediate/cur_individual_charged/payer_aws_account_id=434519024304/year=2024/month=02/assembly_id=20240306T234629Z/execution_date=2024-03-07 12%3A01%3A31/" "s3://alpha-a2b-common-aws-aggregate-intermediate/cur_individual_charged/payer_aws_account_id=434519024304/year=2024/month=02/assembly_id=20240306T234629Z/execution_date=2024-03-07 12%3A01%3A31/" --dryrun
+
+# 3月最新分
+aws --profile private-a2b-admin s3 cp --recursive "s3://production-a2b-common-aws-aggregate-intermediate/cur_individual_charged/payer_aws_account_id=434519024304/year=2024/month=03/assembly_id=20240319T044635Z/execution_date=2024-03-19 15%3A01%3A40/" "s3://alpha-a2b-common-aws-aggregate-intermediate/cur_individual_charged/payer_aws_account_id=434519024304/year=2024/month=03/assembly_id=20240319T044635Z/execution_date=2024-03-19 15%3A01%3A40/" --dryrun
