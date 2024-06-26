@@ -1,7 +1,7 @@
 # daily_meeting
-./daily_meeting/output/
+./daily_meeting/output/*.txt
 ./daily_meeting/input.html
 
 # move_data_for_ecam
-./move_data_for_ecam/sql/
+./move_data_for_ecam/sql/*.sql
 
