@@ -20,10 +20,51 @@
 SELECT payer_aws_account_id, count(*) AS count FROM "daikinemoto_a2b_local_aws_aggregate"."chorus_portal_account" 
 GROUP BY payer_aws_account_id
 limit 1000;
+
+SELECT payer_aws_account_id, count(*) AS count FROM "daikinemoto_a2b_local_aws_aggregate"."discount_exclude" 
+GROUP BY payer_aws_account_id
+limit 1000;
+
+SELECT payer_aws_account_id, count(*) AS count FROM "daikinemoto_a2b_local_aws_aggregate"."discount_individual" 
+GROUP BY payer_aws_account_id
+limit 1000;
+
+SELECT payer_aws_account_id, count(*) AS count FROM "daikinemoto_a2b_local_aws_aggregate"."individual_charge" 
+GROUP BY payer_aws_account_id
+limit 1000;
+
+SELECT payer_aws_account_id, count(*) AS count FROM "daikinemoto_a2b_local_aws_aggregate"."reserved_instance_ec2" 
+GROUP BY payer_aws_account_id
+limit 1000;
+
+SELECT payer_aws_account_id, count(*) AS count FROM "daikinemoto_a2b_local_aws_aggregate"."reserved_instance_dynamodb" 
+GROUP BY payer_aws_account_id
+limit 1000;
+
+SELECT payer_aws_account_id, count(*) AS count FROM "daikinemoto_a2b_local_aws_aggregate"."reserved_instance_elasticache" 
+GROUP BY payer_aws_account_id
+limit 1000;
+
+SELECT payer_aws_account_id, count(*) AS count FROM "daikinemoto_a2b_local_aws_aggregate"."reserved_instance_opensearch" 
+GROUP BY payer_aws_account_id
+limit 1000;
+
+SELECT payer_aws_account_id, count(*) AS count FROM "daikinemoto_a2b_local_aws_aggregate"."reserved_instance_rds" 
+GROUP BY payer_aws_account_id
+limit 1000;
+
+SELECT payer_aws_account_id, count(*) AS count FROM "daikinemoto_a2b_local_aws_aggregate"."reserved_instance_redshift" 
+GROUP BY payer_aws_account_id
+limit 1000;
+
+SELECT payer_aws_account_id, count(*) AS count FROM "daikinemoto_a2b_local_aws_aggregate"."savings_plans" 
+GROUP BY payer_aws_account_id
+limit 1000;
 ```
 
 ## cp連携データ　prodのクエリ
-コードで出力した
+コードで出力したもの
+/sql
 
 
 ## mapping ri
@@ -37,6 +78,10 @@ SELECT count(*) FROM "production_a2b_common_aws_aggregate"."pricing_type_reserve
 
 
 ## mapping sp
+```
+SELECT count(*) FROM "daikinemoto_a2b_local_aws_aggregate"."pricing_type_savingsplan" limit 10;
+```
+
 ```
 SELECT count(*) FROM "production_a2b_common_aws_aggregate"."pricing_type_savingsplan" limit 10;
 ```

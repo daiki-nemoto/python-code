@@ -82,13 +82,6 @@ account_291957535319 AS (
    FROM 
        "production_a2b_common_aws_aggregate_dedicated_291957535319"."individual_charge"
 ),
-account_338834536339 AS (
-   SELECT 
-       '338834536339' AS title, 
-       count(*) AS individual_charge 
-   FROM 
-       "production_a2b_common_aws_aggregate_dedicated_338834536339"."individual_charge"
-),
 account_341267347886 AS (
    SELECT 
        '341267347886' AS title, 
@@ -187,13 +180,6 @@ account_727023716560 AS (
    FROM 
        "production_a2b_common_aws_aggregate_dedicated_727023716560"."individual_charge"
 ),
-account_856753954371 AS (
-   SELECT 
-       '856753954371' AS title, 
-       count(*) AS individual_charge 
-   FROM 
-       "production_a2b_common_aws_aggregate_dedicated_856753954371"."individual_charge"
-),
 account_862340440120 AS (
    SELECT 
        '862340440120' AS title, 
@@ -265,78 +251,110 @@ account_999564223101 AS (
        "production_a2b_common_aws_aggregate_dedicated_999564223101"."individual_charge"
 )
 SELECT title, individual_charge FROM account_434519024304
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_014229765626
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_014730125768
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_015166320012
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_023280770555
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_034783791145
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_073858585757
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_127466939911
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_189585356497
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_226060598830
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_247364657386
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_291957535319
-UNION ALL
-SELECT title, individual_charge FROM account_338834536339
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_341267347886
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_346402807177
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_366519242445
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_394759194433
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_430092958156
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_460564462217
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_507776553901
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_514831055183
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_552721663264
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_582087840222
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_634487139226
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_638346777360
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_672604971719
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_727023716560
-UNION ALL
-SELECT title, individual_charge FROM account_856753954371
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_862340440120
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_863071450033
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_875144205584
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_884103735193
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_897706971707
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_918821427740
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_955737177772
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_963065819957
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_969325077577
+WHERE individual_charge > 0
 UNION ALL
 SELECT title, individual_charge FROM account_999564223101
+WHERE individual_charge > 0
 ;

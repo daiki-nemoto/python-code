@@ -82,13 +82,6 @@ account_291957535319 AS (
    FROM 
        "production_a2b_common_aws_aggregate_dedicated_291957535319"."chorus_portal_account"
 ),
-account_338834536339 AS (
-   SELECT 
-       '338834536339' AS title, 
-       count(*) AS chorus_portal_account 
-   FROM 
-       "production_a2b_common_aws_aggregate_dedicated_338834536339"."chorus_portal_account"
-),
 account_341267347886 AS (
    SELECT 
        '341267347886' AS title, 
@@ -187,13 +180,6 @@ account_727023716560 AS (
    FROM 
        "production_a2b_common_aws_aggregate_dedicated_727023716560"."chorus_portal_account"
 ),
-account_856753954371 AS (
-   SELECT 
-       '856753954371' AS title, 
-       count(*) AS chorus_portal_account 
-   FROM 
-       "production_a2b_common_aws_aggregate_dedicated_856753954371"."chorus_portal_account"
-),
 account_862340440120 AS (
    SELECT 
        '862340440120' AS title, 
@@ -265,78 +251,110 @@ account_999564223101 AS (
        "production_a2b_common_aws_aggregate_dedicated_999564223101"."chorus_portal_account"
 )
 SELECT title, chorus_portal_account FROM account_434519024304
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_014229765626
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_014730125768
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_015166320012
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_023280770555
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_034783791145
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_073858585757
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_127466939911
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_189585356497
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_226060598830
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_247364657386
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_291957535319
-UNION ALL
-SELECT title, chorus_portal_account FROM account_338834536339
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_341267347886
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_346402807177
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_366519242445
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_394759194433
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_430092958156
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_460564462217
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_507776553901
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_514831055183
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_552721663264
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_582087840222
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_634487139226
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_638346777360
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_672604971719
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_727023716560
-UNION ALL
-SELECT title, chorus_portal_account FROM account_856753954371
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_862340440120
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_863071450033
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_875144205584
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_884103735193
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_897706971707
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_918821427740
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_955737177772
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_963065819957
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_969325077577
+WHERE chorus_portal_account > 0
 UNION ALL
 SELECT title, chorus_portal_account FROM account_999564223101
+WHERE chorus_portal_account > 0
 ;

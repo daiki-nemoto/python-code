@@ -1,0 +1,152 @@
+{
+    "year" : "2024",
+    "month" : "05",
+    "shared_payer_assembly_id": "20240602T235638Z",
+    "metadata_usage_type": "latest",
+    "targets" : [
+        {
+            "assembly_id": "20240602T140628Z",
+            "payer_aws_account_id": "014229765626"
+         },
+         {
+            "assembly_id": "20240602T163126Z",
+            "payer_aws_account_id": "014730125768"
+         },
+         {
+            "assembly_id": "20240602T225126Z",
+            "payer_aws_account_id": "015166320012"
+         },
+         {
+            "assembly_id": "20240602T143127Z",
+            "payer_aws_account_id": "023280770555"
+         },
+         {
+            "assembly_id": "20240602T141628Z",
+            "payer_aws_account_id": "034783791145"
+         },
+         {
+            "assembly_id": "20240603T001134Z",
+            "payer_aws_account_id": "073858585757"
+         },
+         {
+            "assembly_id": "20240602T163126Z",
+            "payer_aws_account_id": "127466939911"
+         },
+         {
+            "assembly_id": "20240602T170125Z",
+            "payer_aws_account_id": "189585356497"
+         },
+         {
+            "assembly_id": "20240602T224633Z",
+            "payer_aws_account_id": "226060598830"
+         },
+         {
+            "assembly_id": "20240602T162126Z",
+            "payer_aws_account_id": "247364657386"
+         },
+         {
+            "assembly_id": "20240602T124629Z",
+            "payer_aws_account_id": "291957535319"
+         },
+         {
+            "assembly_id": "20240602T080628Z",
+            "payer_aws_account_id": "338834536339"
+         },
+         {
+            "assembly_id": "20240602T224633Z",
+            "payer_aws_account_id": "341267347886"
+         },
+         {
+            "assembly_id": "20240602T144129Z",
+            "payer_aws_account_id": "346402807177"
+         },
+         {
+            "assembly_id": "20240602T231648Z",
+            "payer_aws_account_id": "366519242445"
+         },
+         {
+            "assembly_id": "20240602T162626Z",
+            "payer_aws_account_id": "394759194433"
+         },
+         {
+            "assembly_id": "20240602T235638Z",
+            "payer_aws_account_id": "434519024304"
+         },
+         {
+            "assembly_id": "20240602T174623Z",
+            "payer_aws_account_id": "460564462217"
+         },
+         {
+            "assembly_id": "20240602T221637Z",
+            "payer_aws_account_id": "507776553901"
+         },
+         {
+            "assembly_id": "20240602T164629Z",
+            "payer_aws_account_id": "514831055183"
+         },
+         {
+            "assembly_id": "20240602T224134Z",
+            "payer_aws_account_id": "552721663264"
+         },
+         {
+            "assembly_id": "20240602T065629Z",
+            "payer_aws_account_id": "582087840222"
+         },
+         {
+            "assembly_id": "20240602T164126Z",
+            "payer_aws_account_id": "634487139226"
+         },
+         {
+            "assembly_id": "20240602T171124Z",
+            "payer_aws_account_id": "638346777360"
+         },
+         {
+            "assembly_id": "20240602T170124Z",
+            "payer_aws_account_id": "672604971719"
+         },
+         {
+            "assembly_id": "20240602T143626Z",
+            "payer_aws_account_id": "727023716560"
+         },
+         {
+            "assembly_id": "20240602T190635Z",
+            "payer_aws_account_id": "856753954371"
+         },
+         {
+            "assembly_id": "20240602T075633Z",
+            "payer_aws_account_id": "862340440120"
+         },
+         {
+            "assembly_id": "20240602T183626Z",
+            "payer_aws_account_id": "863071450033"
+         },
+         {
+            "assembly_id": "20240602T065131Z",
+            "payer_aws_account_id": "875144205584"
+         },
+         {
+            "assembly_id": "20240602T142127Z",
+            "payer_aws_account_id": "897706971707"
+         },
+         {
+            "assembly_id": "20240602T235129Z",
+            "payer_aws_account_id": "918821427740"
+         },
+         {
+            "assembly_id": "20240602T170124Z",
+            "payer_aws_account_id": "955737177772"
+         },
+         {
+            "assembly_id": "20240602T150126Z",
+            "payer_aws_account_id": "963065819957"
+         },
+         {
+            "assembly_id": "20240602T140629Z",
+            "payer_aws_account_id": "969325077577"
+         },
+         {
+            "assembly_id": "20240602T222634Z",
+            "payer_aws_account_id": "999564223101"
+         }
+    ]
+}

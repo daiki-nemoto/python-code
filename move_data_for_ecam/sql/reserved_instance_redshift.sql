@@ -82,13 +82,6 @@ account_291957535319 AS (
    FROM 
        "production_a2b_common_aws_aggregate_dedicated_291957535319"."reserved_instance_redshift"
 ),
-account_338834536339 AS (
-   SELECT 
-       '338834536339' AS title, 
-       count(*) AS reserved_instance_redshift 
-   FROM 
-       "production_a2b_common_aws_aggregate_dedicated_338834536339"."reserved_instance_redshift"
-),
 account_341267347886 AS (
    SELECT 
        '341267347886' AS title, 
@@ -187,13 +180,6 @@ account_727023716560 AS (
    FROM 
        "production_a2b_common_aws_aggregate_dedicated_727023716560"."reserved_instance_redshift"
 ),
-account_856753954371 AS (
-   SELECT 
-       '856753954371' AS title, 
-       count(*) AS reserved_instance_redshift 
-   FROM 
-       "production_a2b_common_aws_aggregate_dedicated_856753954371"."reserved_instance_redshift"
-),
 account_862340440120 AS (
    SELECT 
        '862340440120' AS title, 
@@ -265,78 +251,110 @@ account_999564223101 AS (
        "production_a2b_common_aws_aggregate_dedicated_999564223101"."reserved_instance_redshift"
 )
 SELECT title, reserved_instance_redshift FROM account_434519024304
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_014229765626
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_014730125768
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_015166320012
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_023280770555
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_034783791145
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_073858585757
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_127466939911
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_189585356497
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_226060598830
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_247364657386
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_291957535319
-UNION ALL
-SELECT title, reserved_instance_redshift FROM account_338834536339
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_341267347886
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_346402807177
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_366519242445
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_394759194433
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_430092958156
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_460564462217
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_507776553901
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_514831055183
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_552721663264
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_582087840222
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_634487139226
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_638346777360
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_672604971719
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_727023716560
-UNION ALL
-SELECT title, reserved_instance_redshift FROM account_856753954371
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_862340440120
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_863071450033
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_875144205584
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_884103735193
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_897706971707
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_918821427740
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_955737177772
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_963065819957
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_969325077577
+WHERE reserved_instance_redshift > 0
 UNION ALL
 SELECT title, reserved_instance_redshift FROM account_999564223101
+WHERE reserved_instance_redshift > 0
 ;

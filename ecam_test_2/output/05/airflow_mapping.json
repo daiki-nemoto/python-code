@@ -1,0 +1,19 @@
+{
+    "year": "2024",
+    "month": "05",
+    "assembly_id": "20240602T235638Z",
+    "pricing_types": "Reserved,savingsPlan",
+    "ec2_od_price_lists_uri": "s3://ecam-a2b-common-download-aws-price-lists/service_code=AmazonEC2/pricing_type=OnDemand/year=2024/month=05/create_date=2024-05-30 02:01:03/all.parquet",
+    "ec2_ri_price_lists_uri": "s3://ecam-a2b-common-download-aws-price-lists/service_code=AmazonEC2/pricing_type=Reserved/year=2024/month=05/create_date=2024-05-30 02:01:03/all.parquet",
+    "ec2_sp_price_lists_uri": "s3://ecam-a2b-common-download-aws-price-lists/service_code=AmazonEC2/pricing_type=savingsPlan/year=2024/month=05/create_date=2024-05-30 06:01:16/all.parquet",
+    "lambda_od_price_lists_uri": "s3://ecam-a2b-common-download-aws-price-lists/service_code=AWSLambda/pricing_type=OnDemand/year=2024/month=04/create_date=2024-04-02 02:01:03/all.parquet",
+    "lambda_sp_price_lists_uri": "s3://ecam-a2b-common-download-aws-price-lists/service_code=AWSLambda/pricing_type=savingsPlan/year=2024/month=05/create_date=2024-05-30 06:01:16/all.parquet",
+    "ecs_od_price_lists_uri": "s3://ecam-a2b-common-download-aws-price-lists/service_code=AmazonECS/pricing_type=OnDemand/year=2024/month=02/create_date=2024-02-15 02:01:03/all.parquet",
+    "ecs_sp_price_lists_uri": "s3://ecam-a2b-common-download-aws-price-lists/service_code=AmazonECS/pricing_type=savingsPlan/year=2024/month=05/create_date=2024-05-30 06:01:16/all.parquet",
+    "sagemaker_od_price_lists_uri": "s3://ecam-a2b-common-download-aws-price-lists/service_code=AmazonSageMaker/pricing_type=OnDemand/year=2024/month=05/create_date=2024-05-24 02:01:01/all.parquet",
+    "sagemaker_sp_price_lists_uri": "s3://ecam-a2b-common-download-aws-price-lists/service_code=AmazonSageMaker/pricing_type=savingsPlan/year=2024/month=05/create_date=2024-05-30 06:01:16/all.parquet",
+    "eks_od_price_lists_uri": "s3://ecam-a2b-common-download-aws-price-lists/service_code=AmazonEKS/pricing_type=OnDemand/year=2024/month=04/create_date=2024-04-06 02:01:10/all.parquet",
+    "eks_sp_price_lists_uri": "s3://ecam-a2b-common-download-aws-price-lists/service_code=AmazonEKS/pricing_type=savingsPlan/year=2024/month=05/create_date=2024-05-30 06:01:16/all.parquet",
+    "ec2_ri_cp_data_uri": "s3://alpha-a2b-common-chorus-portal-master-data/shared/reserved_instance-ec2/year=2024/month=05/create_date=2024-06-03 21:15:01/0.parquet",
+    "sp_cp_data_uri": "s3://alpha-a2b-common-chorus-portal-master-data/shared/savings_plans/year=2024/month=05/create_date=2024-06-03 21:15:01/0.parquet"
+}

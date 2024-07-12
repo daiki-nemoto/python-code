@@ -1,0 +1,1 @@
+aws --profile private-a2b-admin s3 sync --delete --exact-timestamps s3://production-a2b-common-cur/shared/434519024304/cur-origin/20240501-20240601/20240602T235638Z/ s3://ecam01-a2b-common-cur/shared/434519024304/cur-origin/20240501-20240601/20240602T235638Z/

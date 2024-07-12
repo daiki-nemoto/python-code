@@ -82,13 +82,6 @@ account_291957535319 AS (
    FROM 
        "production_a2b_common_aws_aggregate_dedicated_291957535319"."discount_individual"
 ),
-account_338834536339 AS (
-   SELECT 
-       '338834536339' AS title, 
-       count(*) AS discount_individual 
-   FROM 
-       "production_a2b_common_aws_aggregate_dedicated_338834536339"."discount_individual"
-),
 account_341267347886 AS (
    SELECT 
        '341267347886' AS title, 
@@ -187,13 +180,6 @@ account_727023716560 AS (
    FROM 
        "production_a2b_common_aws_aggregate_dedicated_727023716560"."discount_individual"
 ),
-account_856753954371 AS (
-   SELECT 
-       '856753954371' AS title, 
-       count(*) AS discount_individual 
-   FROM 
-       "production_a2b_common_aws_aggregate_dedicated_856753954371"."discount_individual"
-),
 account_862340440120 AS (
    SELECT 
        '862340440120' AS title, 
@@ -265,78 +251,110 @@ account_999564223101 AS (
        "production_a2b_common_aws_aggregate_dedicated_999564223101"."discount_individual"
 )
 SELECT title, discount_individual FROM account_434519024304
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_014229765626
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_014730125768
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_015166320012
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_023280770555
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_034783791145
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_073858585757
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_127466939911
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_189585356497
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_226060598830
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_247364657386
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_291957535319
-UNION ALL
-SELECT title, discount_individual FROM account_338834536339
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_341267347886
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_346402807177
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_366519242445
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_394759194433
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_430092958156
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_460564462217
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_507776553901
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_514831055183
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_552721663264
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_582087840222
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_634487139226
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_638346777360
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_672604971719
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_727023716560
-UNION ALL
-SELECT title, discount_individual FROM account_856753954371
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_862340440120
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_863071450033
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_875144205584
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_884103735193
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_897706971707
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_918821427740
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_955737177772
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_963065819957
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_969325077577
+WHERE discount_individual > 0
 UNION ALL
 SELECT title, discount_individual FROM account_999564223101
+WHERE discount_individual > 0
 ;

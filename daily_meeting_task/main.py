@@ -90,7 +90,8 @@ for target in data_array:
 
 ## 保存
 name = f'{target_path}0.txt'
-save_file(result, name)
+# save_file(result, name)
+print(result)
 
 ## 通知
 nortificatioin('end')

@@ -3,8 +3,8 @@ import re
 
 DEST_PREFIX="ecam01-a2b-common"
 YYYY="2024"
-# MM="04"
-MM="05" 
+# MM="05"
+MM="06" 
 
 
 df = pd.read_csv(f'./data/{MM}/metadata_cpdata.csv', header=0, names=["payer_aws_account_id", "table_name", "create_date"], dtype={ "payer_aws_account_id": "string", "table_name": "string", "create_date": "string"})

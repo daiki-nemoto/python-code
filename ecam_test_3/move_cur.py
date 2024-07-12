@@ -2,10 +2,10 @@ import pandas as pd
 
 
 DEST_PREFIX="ecam01-a2b-common"
-MONTH="05"
-YYYYMMDD_YYYMMDD="20240501-20240601"
-# MONTH="04"
-# YYYYMMDD_YYYMMDD="20240401-20240501"
+# MONTH="05"
+# YYYYMMDD_YYYMMDD="20240501-20240601"
+MONTH="06"
+YYYYMMDD_YYYMMDD="20240601-20240701"
 
 df = pd.read_csv(f'./data/{MONTH}/metadata_fix.csv', header=0, names=["assembly_id", "payer_aws_account_id"], dtype={ "assembly_id": "string", "payer_aws_account_id": "string"})
 

@@ -28,7 +28,6 @@ DEDICATED_AWS_ACCOUNT_IDS = [
   "226060598830",
   "247364657386",
   "291957535319",
-  "338834536339",
   "341267347886",
   "346402807177",
   "366519242445",
@@ -43,7 +42,6 @@ DEDICATED_AWS_ACCOUNT_IDS = [
   "638346777360",
   "672604971719",
   "727023716560",
-  "856753954371",
   "862340440120",
   "863071450033",
   "875144205584",
@@ -68,7 +66,7 @@ def create_sql_with(aws_account_id, table_type, db_name):
         ")".format(aws_account_id, table_type, db_name)
     )
 def create_sql_union(aws_account_id, table_type,):
-    return "SELECT title, {0} FROM account_{1}\n".format(table_type, aws_account_id)
+    return "SELECT title, {0} FROM account_{1}\nWHERE {0} > 0\n".format(table_type, aws_account_id)
     
 
 for table_type in TABLE_TYPES:
